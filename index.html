@@ -74,6 +74,9 @@
                     image-rendering: pixelated; // optional but useful
                 }
             </pre>
+            But as you can see by inspecting, the canvas width and height attributes themselves are the ones
+            I actually set in my project (180 x 120), so I know my internal resolution and I can scale my canvas
+            and let the browser do it's thing. (image-rendering: pixelated; works wonders here)
         </p>
         <iframe src="simple-life-p5js.html" onload="resize(this);"></iframe>
         <p>
@@ -88,7 +91,7 @@
         <p>
             When embedding an ebiten project (this one is also 180x120), the iframe's src document has the html and body set to full height,
             which in turn calculates the width and then sets the canvas size of the iframe to the width of the viewport!
-            Not the width of my project! (This is returning the outside size in Layout)
+            Not the width of my project! (returning the outside size in Layout will just move the tiny canvas to the upper left corner)
         </p>
         <iframe src="simple-life-wasm.html"></iframe>
         <p>
@@ -102,10 +105,22 @@
             be the ones defined inside the project width setWindowSize or by the Layout function to avoid surprises. 
             And then scale the canvas appropriately using the canvas style with: width and height both to 100%.
         </p>
-        <h3>Is there a way or hack to make ebiten projects auto-resize based on content width?</h3>
     </div>
     <hr>
-    
+    <div>
+        <h3>ebiten Example (fixed size)</h3>
+        <p>
+            Of course I can always set the fixed width and height attributes, but then I can't make it responsive.
+            Because the canvas width will scale according to the content, but the height can't.
+            And I always need to know before hand what size the project is, which defeats the purpose in my blog 
+            of using Hugo shortcodes to embed projects easily, and does not let the browser do it's job by resizing the canvas itself.
+        </p>
+        <iframe src="simple-life-wasm.html" width="960" height="640"></iframe>
+    </div>
+    <hr>
+    <h1>Is there a way or hack to make ebiten projects auto-resize based on content width?</h1>
+    <br>
+    <br>
 </main>
 <script>
 function resize(iframe) {

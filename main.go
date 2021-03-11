@@ -113,7 +113,7 @@ func (game *GameOfLife) Draw(screen *ebiten.Image) {
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
 // If you don't have to adjust the screen size with the outside size, just return a fixed size.
 func (game *GameOfLife) Layout(width, height int) (int, int) {
-	return width, height
+	//return width, height
 	return game.width, game.height
 }
 
