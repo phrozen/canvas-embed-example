@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Embed Canvas Example</title>
+    <style>
+        html, body {
+            width: 100%;
+        }
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        iframe {
+            display: block;
+            border: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div>
+        <h3>p5.js Example (height: auto)</h3>
+        <p>
+            This example has iframe style set as:
+            <pre>
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            </pre>
+            The iframe will render at the width of it's parent. The canvas inside will adjust to it's width,
+            and render at it's full height depending on the sketch resolution. (180x120)
+        </p>
+        <iframe src="simple-life-p5js.html"></iframe>
+        <p>
+            Now I can then use a function in JS as follows:
+            <pre>
+                function resize(iframe) {
+                    iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+                    iframe.contentWindow.addEventListener('resize', () => {
+                        iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+                    });
+                }
+            </pre>
+            Which will resize the iframe to the rendered height and add an event listener for resize.
+        </p>
+    </div>
+    <hr>
+    <div>
+        <h3>p5.js Example (auto-resize)</h3>
+        <p>
+            If I apply the resize function in the iframe's onload event:
+            <pre>
+                &lt;iframe src="simple-life-p5js.html" onload="resize(this);"&gt;
+            </pre>
+            The initial canvas size is calculated based on the width, and not on the height,
+            so it will render the full canvas and I can resize to the scrollHeight of the body.
+            <br><br>
+            In order to do that, inside the embedded src for the iframe I made sure the canvas,
+            html and body have this style:
+            <pre>
+                html, body {
+                    width: 100%;
+                    padding: 0;
+                    margin: 0;
+                }
+                main, .p5Canvas {
+                    width: 100% !important;
+                    height: 100% !important;
+                    display: block;
+                    image-rendering: pixelated; // optional but useful
+                }
+            </pre>
+        </p>
+        <iframe src="simple-life-p5js.html" onload="resize(this);"></iframe>
+        <p>
+            This iframe is now responsive! As well as the document with the canvas inside it!
+            You can try resizing your browser or adjusting the parents width, and it will display
+            correctly.
+        </p>
+    </div>
+    <hr>
+    <div>
+        <h3>ebiten Example (height: auto)</h3>
+        <p>
+            When embedding an ebiten project (this one is also 180x120), the iframe's src document has the html and body set to full height,
+            which in turn calculates the width and then sets the canvas size of the iframe to the width of the viewport!
+            Not the width of my project! (This is returning the outside size in Layout)
+        </p>
+        <iframe src="simple-life-wasm.html"></iframe>
+        <p>
+            And because the height is used to initialize the canvas (instead of the width),
+            if I use the resize function, the program will exit with status code 2 as it cannot initialize
+            the canvas with height 0.
+        </p>
+        <p>
+            In this case I ALWAYS have to know before hand the exact width and height of the project, and even then,
+            I need to calculate the height to preserve display ratio. The canvas width and height attributes need to ALWAYS
+            be the ones defined inside the project width setWindowSize or by the Layout function to avoid surprises. 
+            And then scale the canvas appropriately using the canvas style with: width and height both to 100%.
+        </p>
+        <h3>Is there a way or hack to make ebiten projects auto-resize based on content width?</h3>
+    </div>
+    <hr>
+    
+</main>
+<script>
+function resize(iframe) {
+    iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+    iframe.contentWindow.addEventListener('resize', () => {
+        iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+    });
+}
+</script>
+</body>
+</html>
+
