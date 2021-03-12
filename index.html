@@ -5,6 +5,8 @@
     <style>
         html, body {
             width: 100%;
+            margin: 0;
+            padding: 0;
         }
         main {
             max-width: 960px;
@@ -34,7 +36,7 @@
             The iframe will render at the width of it's parent. The canvas inside will adjust to it's width,
             and render at it's full height depending on the sketch resolution. (180x120)
         </p>
-        <iframe src="simple-life-p5js.html"></iframe>
+        <iframe src="simple-life-p5js.html" scrolling="0" frameborder="0"></iframe>
         <p>
             Now I can then use a function in JS as follows:
             <pre>
@@ -78,7 +80,7 @@
             I actually set in my project (180 x 120), so I know my internal resolution and I can scale my canvas
             and let the browser do it's thing. (image-rendering: pixelated; works wonders here)
         </p>
-        <iframe src="simple-life-p5js.html" onload="resize(this);"></iframe>
+        <iframe src="simple-life-p5js.html" onload="resize(this);" scrolling="0" frameborder="0"></iframe>
         <p>
             This iframe is now responsive! As well as the document with the canvas inside it!
             You can try resizing your browser or adjusting the parents width, and it will display
@@ -119,14 +121,54 @@
     </div>
     <hr>
     <h1>Is there a way or hack to make ebiten projects auto-resize based on content width?</h1>
-    <br>
-    <br>
+    <hr>
+    <div>
+        <h3 id="solution">Ebiten Modified Example (solution)</h3>
+        <p>
+            In this example, the iframe has no width or height set, the onload function is called with the parent id and aspect ratio.
+            And looks like this:
+            <pre>
+                function resizeEbiten(iframe, parentId, aspectRatio) {
+                    let parent = document.getElementById(parentId);
+                    let w = parent.clientWidth;
+                    iframe.width = w;
+                    iframe.height = w * aspectRatio;
+                    iframe.contentWindow.addEventListener('resize', () => {
+                        let w = parent.clientWidth;
+                        iframe.width = w;
+                        iframe.height = w * aspectRatio;
+                    });
+                }
+            </pre>
+            This way, as long as you know the aspectRatio the width of the iframe is taken from it's parent and it's
+            height is dynamically calculated based on the aspectRatio.
+        </p>
+        <p>
+           <strong>Try resizing the browser window to see it resize correctly. While maintaining fixes logical screen size</strong> 
+        </p>
+        <div id="mod">
+            <iframe src="simple-life-mod.html" onload="resizeEbiten(this, 'mod', 12/18)"></iframe>
+        </div>
+        
+    </div>
+    <hr>
 </main>
 <script>
 function resize(iframe) {
     iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
     iframe.contentWindow.addEventListener('resize', () => {
         iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+    });
+}
+function resizeEbiten(iframe, parentId, aspectRatio) {
+    let parent = document.getElementById(parentId);
+    let w = parent.clientWidth;
+    iframe.width = w;
+    iframe.height = w * aspectRatio;
+    iframe.contentWindow.addEventListener('resize', () => {
+        let w = parent.clientWidth;
+        iframe.width = w;
+        iframe.height = w * aspectRatio;
     });
 }
 </script>

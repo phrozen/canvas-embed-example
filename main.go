@@ -113,14 +113,15 @@ func (game *GameOfLife) Draw(screen *ebiten.Image) {
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
 // If you don't have to adjust the screen size with the outside size, just return a fixed size.
 func (game *GameOfLife) Layout(width, height int) (int, int) {
-	//return width, height
+	// return fixedWidth, int(fixedWidth * float64(height) / float64(width))
 	return game.width, game.height
 }
 
 func main() {
 	game := NewGameOfLife(180, 120)
-	ebiten.SetWindowSize(game.width, game.height)
+	ebiten.SetWindowSize(game.width*4, game.height*4)
 	ebiten.SetWindowTitle("Simple Life")
+	ebiten.SetWindowResizable(true)
 	ebiten.SetMaxTPS(10)
 	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)
